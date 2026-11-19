@@ -1,6 +1,5 @@
 #include "game.h"
 
-//todo starter mezo makrok
 static bool hasAteApple;
 static bool isGameOver; 
 static Direction_t curDir;
@@ -191,10 +190,10 @@ void Game_Refresh_Snake(void) {
 
 		if(nextTurn == RIGHT) 
 		{
-			curDir = (curDir + 3) % 4;
+			curDir = (curDir + 3) % DIR_COUNT;
 		} else if (nextTurn == LEFT) 
 		{
-			curDir = (curDir + 1) % 4;
+			curDir = (curDir + 1) % DIR_COUNT;
 		}
 		nextTurn = STRAIGHT;
 
@@ -224,8 +223,7 @@ void Game_MoveSnakeBody(uint8_t bodyid) {
 
 
 
-void Game_Step(uint8_t input)
-{
+void Game_Step(uint8_t input) {
 	// curDir is a 4 long enum
 	switch(input){
 		case 'j':
@@ -241,8 +239,21 @@ void Game_Step(uint8_t input)
 	return;
 }
 
-void Game_GameOverRoutine(void)
-{
+void Game_GameOverRoutine(void) {
 	//TODO
 	return;
 }
+
+
+bool Game_getIsGameOver(void) {
+	return isGameOver;
+}
+
+uint8_t Game_getFoodPos(void) {
+	return foodPos;
+}
+
+bool Game_getTileIsActive(uint8_t p_tileid) {
+	return board[p_tileid].tile_isActive;
+}
+

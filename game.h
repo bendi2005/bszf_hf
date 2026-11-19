@@ -24,7 +24,7 @@ typedef enum {
 typedef struct {
 	const uint8_t tile_id;
 	bool tile_isActive;	
-	const uint8_t tile_neighbours[2][3];
+	const uint8_t tile_neighbours[2][3];  // 6 neighbours 2*3 array
 } tile;
 
 typedef struct {
@@ -69,6 +69,11 @@ uint8_t Game_SearchTileByPos(uint8_t);
 // 'j' => right		'b' => left
 //checking the validity of the input is handled by uart_stuff
 void Game_Step(uint8_t);
+
+// getters for app.c (since the below are static)
+bool Game_getIsGameOver(void);
+uint8_t Game_getFoodPos(void);
+bool Game_getIsTileActive(uint8_t);
 
 #endif
 
