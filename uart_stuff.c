@@ -17,15 +17,14 @@ void Uartstuff_InitUsart(void) {
 	USART_InitAsync_TypeDef init = USART_INITASYNC_DEFAULT;
 	USART_InitAsync(USART0, &init);
 
-	// PE0: output	PE1: input
-	GPIO_PinModeSet(gpioPortE, 0, gpioModePushPull, 1);
+	// PE1: input
 	GPIO_PinModeSet(gpioPortE, 1, gpioModeInput, 0);
 
 	// Ask UART0 nicely, to please use these pins
 	// Select "Location 1" as the routing configuration
 	UART0->ROUTE |= UART_ROUTE_LOCATION_LOC1;
-	// Enable both RX and TX for routing
-	UART0->ROUTE |= UART_ROUTE_TXPEN | UART_ROUTE_RXPEN;
+	// Enable TX for routing
+	UART0->ROUTE |= UART_ROUTE_RXPEN;
 	
 	input_in_buffer = false;
 	valid_input = 0;
@@ -33,16 +32,21 @@ void Uartstuff_InitUsart(void) {
 }
 
 void Uartstuff_EnableInterrupt(void) {
+	// Clears recieve buffer from any input it might have recieved during the init phase of the game
+	// TODO: ezt lehet ketszer kell meghivni idk hogy mukodik mert ugye 2 adat fer az olvaso bufferbe 
+	USART_RxDataGet(UART0);	
+
 	// Raises interrupt if anything enters the buffer
 	USART_IntEnable(UART0,USART_IF_RXDATAV);
+
 	// Allows interrupt to be served by processor
-	// efm32gg_usart.h
+	// enum from: efm32gg_usart.h
 	NVIC_EnableIRQ(UART0_RX_IRQn);
 
 	return; 
 }
 
-// startup_efm32gg.c
+// ISR function name from: startup_efm32gg.c
 void UART0_RX_IRQHandler(void) {
 	// reads valid (not the same as logically valid) input from UART0 and lowers interrupt flag
 	
@@ -63,6 +67,7 @@ void UART0_RX_IRQHandler(void) {
 	return;	
 }
 
+// passes logically valid input to the game 
 uint8_t Uartstuff_getMove(void) {
 	return valid_input;
 }

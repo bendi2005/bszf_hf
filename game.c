@@ -1,11 +1,17 @@
 #include "game.h"
 #include "uart_stuff.h"
 
+// static flags
 static bool hasAteApple;
 static bool isGameOver; 
 static Direction_t curDir;
+static Turn_t nextTurn;
+static uint8_t foodPos;
+
+// the snake himself
 static snake lajos;
 
+// lookup table for the tiles: each tile (identified by unique id) knows its 6 neighbours in the 6 directions
 // thank you Gemini
 static tile board[TILE_COUNT] = {
     // --- Top horizontal row: A (Digits 1..7) | [0]=EAST, [1]=WEST ---
@@ -56,8 +62,7 @@ static tile board[TILE_COUNT] = {
     { .tile_id = 36, .tile_isActive = false, .tile_neighbours = { { 28,  7, 13 }, { 28, 20, 14 } } }, // 7C
 };
 
-static Turn_t nextTurn;
-static uint8_t foodPos;
+
 
 uint8_t Game_GenRandomTileNumber(void) {
 	//temporary rng
@@ -66,6 +71,7 @@ uint8_t Game_GenRandomTileNumber(void) {
 
 void Game_SpawnFood(void) {
 	uint8_t new_foodpos = Game_GenRandomTileNumber();
+	// check for a valid tile (cannot spawn food onto snake)
 	while(board[new_foodpos].tile_isActive)
 	{
 		new_foodpos = Game_GenRandomTileNumber();
@@ -75,40 +81,40 @@ void Game_SpawnFood(void) {
 }
 
 void Game_InitGame(void) {
+	// clears all tiles
 	for(int i = 0; i < TILE_COUNT; i++)
 	{
 		board[i].tile_isActive = false;
 	}
-	//kezdo mezo board[67].tile_isActive = true
-	// kezdo kaja
 
 	isGameOver = false;	
 	hasAteApple = false;
-	curDir = EAST;
-	nextTurn = STRAIGHT;
 	
 	Game_InitSnake();
 
-	// order matters here
+	// order matters here, to avoid spawning food onto the snake
 	Game_SpawnFood();
 }
 
+// head would go to an active tile == bodypart is already there
 void Game_isGameOver(void) {
 	isGameOver = board[Game_getSnakeHeadNextPos()].tile_isActive;
 	return;
 }
 
 void Game_InitSnake(void) {
+	// starting location and direction as specified
+	curDir = EAST;
+	nextTurn = STRAIGHT;
 	lajos.ingame_snake_len = 1;
 
-lajos.ingame_snake_head.head_dir = curDir;
+	lajos.ingame_snake_head.head_dir = curDir;
 
-	// starter mezo 
+	// sets starter tile active
 	lajos.ingame_snake_head.head_pos = STARTER_TILE_ID;
 	board[Game_SearchTileByPos(Game_getSnakeHeadPos())].tile_isActive = true;
 
-
-	// bodyt nem kell inicializalni mert ...
+	// we dont have to initalise the body, the parts of it will come when the snake gets extended
 
  	return;	
 
@@ -123,7 +129,7 @@ uint8_t Game_SearchTileByPos(uint8_t tilepos) {
 		}
 	}
 	if(r_tileid == 67){
-		//baj van
+		// hopefully this is redundant
 	}
 	return r_tileid;
 }
@@ -141,6 +147,8 @@ uint8_t Game_getSnakeHeadPos(void) {
 }
 
 uint8_t Game_getSnakeHeadNextPos(void) {
+	// example: snake is on the middle horizontal tile, depending on the direction 
+	// a turn right could mean NORTH or SOUTH 
 	uint8_t facing = (curDir == WEST || curDir == SOUTH) ? 1 : 0;
     return board[Game_getSnakeHeadPos()].tile_neighbours[facing][nextTurn];
 }
@@ -154,9 +162,12 @@ void Game_FoodCheck(void) {
 
 void Game_ExtendSnake(uint8_t new_body_pos) {
 
+	// puts the new body into the array of body parts
 	lajos.ingame_snake_body[Game_getLen() - 1].body_pos = new_body_pos;
+	// sets the tile of the new body part active
 	board[new_body_pos].tile_isActive = true;
 	lajos.ingame_snake_len++;
+	// if the snake extended, it ate the food before, we spawn a new one
 	hasAteApple = false;
 	Game_SpawnFood();
 	return;
@@ -165,13 +176,13 @@ void Game_ExtendSnake(uint8_t new_body_pos) {
 void Game_Refresh_Snake(void) {
 	Game_isGameOver();
 
+	// this has to happen before moving the snake
 	uint8_t old_tail_pos = (Game_getLen() == 1)
-                       ? Game_getSnakeHeadPos()
+                       ? Game_getSnakeHeadPos() // if the lenght is 1 (at the start) it would underflow
                        : Game_getSnakeBodyPos(Game_getLen() - 2);
 	if(!isGameOver) 
 	{
 
-		// check the move the player made in the last tick
 
 
 		// iterate on body
@@ -183,13 +194,16 @@ void Game_Refresh_Snake(void) {
 		// set old head to inactive
 		board[Game_getSnakeHeadPos()].tile_isActive = false;
 
+		// set new tiles active
 		for(int i = Game_getLen() - 2; i >= 0; i--) 
 		{
 			board[Game_getSnakeBodyPos(i)].tile_isActive = true;
 		}
 
 		// finally, move head
+		// see if player made a move 
 		Game_Step(Uartstuff_getMove());
+
 		lajos.ingame_snake_head.head_pos = Game_getSnakeHeadNextPos(); 
 		board[Game_getSnakeHeadPos()].tile_isActive = true;
 		
@@ -204,6 +218,7 @@ void Game_Refresh_Snake(void) {
 		}
 		nextTurn = STRAIGHT;
 
+		// if the head moved to the food, the snake ate it
 		Game_FoodCheck();
 		if(hasAteApple) {
 			Game_ExtendSnake(old_tail_pos);
@@ -215,9 +230,9 @@ void Game_Refresh_Snake(void) {
 void Game_MoveSnakeBody(uint8_t bodyid) {
 	if(0 != bodyid) 
 	{
-		board[Game_getSnakeBodyPos(bodyid)].tile_isActive = false;
-		lajos.ingame_snake_body[bodyid].body_pos = Game_getSnakeBodyPos(bodyid - 1);
-	} else 
+		board[Game_getSnakeBodyPos(bodyid)].tile_isActive = false; //the tile it moved away from becomes inactive
+		lajos.ingame_snake_body[bodyid].body_pos = Game_getSnakeBodyPos(bodyid - 1); //the new position, is the "old" position the body part that was ahead
+	} else // if its the first body part (the head), the new position is calculated differently
 	{
 		board[Game_getSnakeBodyPos(bodyid)].tile_isActive = false;
 		lajos.ingame_snake_body[bodyid].body_pos = Game_getSnakeHeadPos();
@@ -227,8 +242,8 @@ void Game_MoveSnakeBody(uint8_t bodyid) {
 
 
 
+// (all type of) validity of the input is checked by the UART module
 void Game_Step(uint8_t input) {
-	// curDir is a 4 long enum
 	switch(input){
 		case 'j':
 			nextTurn = RIGHT;
@@ -236,12 +251,13 @@ void Game_Step(uint8_t input) {
 		case 'b':
 			nextTurn = LEFT;
 			break;
-		default:
+		default: // no move was made
 			nextTurn = STRAIGHT;
 			break;
 	}
 	return;
 }
+
 
 
 
