@@ -13,7 +13,7 @@
 
 
 typedef enum {
-	NORTH, WEST, SOUTH, EAST
+	EAST, NORTH, WEST, SOUTH
 } Direction_t;
 
 typedef struct {
