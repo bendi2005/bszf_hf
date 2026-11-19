@@ -57,7 +57,7 @@ uart_stuff.o: ../uart_stuff.c \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/Device/SiliconLabs/EFM32GG/Include/efm32gg_uart.h \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/Device/SiliconLabs/EFM32GG/Include/efm32gg_af_ports.h \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/Device/SiliconLabs/EFM32GG/Include/efm32gg_af_pins.h \
- /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_cmu.h \
+ /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_gpio.h \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_assert.h \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_bus.h \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_core.h \
@@ -66,9 +66,10 @@ uart_stuff.o: ../uart_stuff.c \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_assert.h \
  /home/bendi/SimplicityStudio/v5_workspace/bszf_hf/snakegame/autogen/sl_component_catalog.h \
  /home/bendi/SimplicityStudio/v5_workspace/bszf_hf/snakegame/config/emlib_core_debug_config.h \
+ /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_enum.h \
+ /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_cmu.h \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_cmu_compat.h \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_gpio.h \
- /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_enum.h \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_status.h \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/sli_em_cmu.h
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/toolchain/inc/sl_gcc_preinclude.h:
@@ -129,7 +130,7 @@ uart_stuff.o: ../uart_stuff.c \
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/Device/SiliconLabs/EFM32GG/Include/efm32gg_uart.h:
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/Device/SiliconLabs/EFM32GG/Include/efm32gg_af_ports.h:
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/Device/SiliconLabs/EFM32GG/Include/efm32gg_af_pins.h:
-/home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_cmu.h:
+/home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_gpio.h:
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_assert.h:
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_bus.h:
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_core.h:
@@ -138,8 +139,9 @@ uart_stuff.o: ../uart_stuff.c \
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_assert.h:
 /home/bendi/SimplicityStudio/v5_workspace/bszf_hf/snakegame/autogen/sl_component_catalog.h:
 /home/bendi/SimplicityStudio/v5_workspace/bszf_hf/snakegame/config/emlib_core_debug_config.h:
+/home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_enum.h:
+/home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_cmu.h:
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_cmu_compat.h:
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_gpio.h:
-/home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_enum.h:
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_status.h:
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/sli_em_cmu.h:
