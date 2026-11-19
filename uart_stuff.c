@@ -17,15 +17,14 @@ void Uartstuff_InitUsart(void) {
 	USART_InitAsync_TypeDef init = USART_INITASYNC_DEFAULT;
 	USART_InitAsync(USART0, &init);
 
-	// PE0: output	PE1: input
-	GPIO_PinModeSet(gpioPortE, 0, gpioModePushPull, 1);
+	// PE1: input
 	GPIO_PinModeSet(gpioPortE, 1, gpioModeInput, 0);
 
 	// Ask UART0 nicely, to please use these pins
 	// Select "Location 1" as the routing configuration
 	UART0->ROUTE |= UART_ROUTE_LOCATION_LOC1;
-	// Enable both RX and TX for routing
-	UART0->ROUTE |= UART_ROUTE_TXPEN | UART_ROUTE_RXPEN;
+	// Enable TX for routing
+	UART0->ROUTE |= UART_ROUTE_RXPEN;
 	
 	input_in_buffer = false;
 	valid_input = 0;

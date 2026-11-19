@@ -20,13 +20,16 @@
  ******************************************************************************/
 #include "game.h"
 #include "timing.h"
+#include "uart_stuff.h"
 
 void app_init(void)
 {
 	Timing_InitTiming();
+	Uartstuff_InitUsart();
 	// DISP_CLR
 	Game_InitGame();
 	// Disp game 
+	Uartstuff_EnableInterrupt();
 }
 
 /***************************************************************************//**
