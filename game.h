@@ -9,17 +9,22 @@
 #include "stdbool.h"
 
 #define DIR_COUNT 4
-#define TILE_COUNT 32
-
+#define TILE_COUNT 37
+#define STARTER_TILE_ID 7
 
 typedef enum {
 	EAST, NORTH, WEST, SOUTH
 } Direction_t;
 
+
+typedef enum {
+		STRAIGHT, RIGHT, LEFT
+} Turn_t;
+
 typedef struct {
 	const uint8_t tile_id;
 	bool tile_isActive;	
-	const uint8_t tile_neighbours[DIR_COUNT];
+	const uint8_t tile_neighbours[2][3];
 } tile;
 
 typedef struct {
@@ -56,7 +61,7 @@ void Game_MoveSnakeBody(uint8_t);
 
 uint8_t Game_getSnakeBodyPos(uint8_t);
 uint8_t Game_getSnakeHeadPos(void);
-uint8_t Game_getSnakeHeadNextPos(Direction_t);
+uint8_t Game_getSnakeHeadNextPos(void);
 
 uint8_t Game_SearchTileByPos(uint8_t);
 
