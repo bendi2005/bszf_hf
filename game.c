@@ -1,4 +1,5 @@
 #include "game.h"
+#include "uart_stuff.h"
 
 static bool hasAteApple;
 static bool isGameOver; 
@@ -170,7 +171,10 @@ void Game_Refresh_Snake(void) {
 	if(!isGameOver) 
 	{
 
-		// vegigmegyunk a bodyn
+		// check the move the player made in the last tick
+
+
+		// iterate on body
 		for(int i = Game_getLen() - 2; i >= 0; i--)
 		{
 			Game_MoveSnakeBody(i);
@@ -184,10 +188,13 @@ void Game_Refresh_Snake(void) {
 			board[Game_getSnakeBodyPos(i)].tile_isActive = true;
 		}
 
-		// leptetjuk a headet is
+		// finally, move head
+		Game_Step(Uartstuff_getMove());
 		lajos.ingame_snake_head.head_pos = Game_getSnakeHeadNextPos(); 
 		board[Game_getSnakeHeadPos()].tile_isActive = true;
+		
 
+		// TODO szebb lenne switch case
 		if(nextTurn == RIGHT) 
 		{
 			curDir = (curDir + 3) % DIR_COUNT;

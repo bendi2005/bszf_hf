@@ -1,6 +1,7 @@
 #include "uart_stuff.h"
 // based on class #3 and #4's material
 static volatile bool input_in_buffer;
+static volatile uint8_t valid_input;
 
 void Uartstuff_InitUsart(void) {
 	// Enable clocks 
@@ -25,7 +26,9 @@ void Uartstuff_InitUsart(void) {
 	UART0->ROUTE |= UART_ROUTE_LOCATION_LOC1;
 	// Enable both RX and TX for routing
 	UART0->ROUTE |= UART_ROUTE_TXPEN | UART_ROUTE_RXPEN;
-
+	
+	input_in_buffer = false;
+	valid_input = 0;
 	return;
 }
 
@@ -40,9 +43,26 @@ void Uartstuff_EnableInterrupt(void) {
 }
 
 // startup_efm32gg.c
-void UART0_RX_IRQHandler(void){
-	uint8_t input = UART0->RXDATA; 
-	input_in_buffer = true;
+void UART0_RX_IRQHandler(void) {
+	// reads valid (not the same as logically valid) input from UART0 and lowers interrupt flag
+	
+	// using a non-static variable is actually faster, because the comparison after
+	// happens using the register inside the cpu (whereas a static var would be in bss (thanks gemini))
+	uint8_t input = USART_RxDataGet(UART0);
+	// we read the input, even if it "goes to waste", as RxDataGet lowers the interrupt flag 
+	// another branch in the if would be slower (i think)
+	if(!input_in_buffer) {
+		// check if its a logically valid input
+		if((input != 'j') || (input == 'b'))
+		{
+			valid_input = input;
+			input_in_buffer = true;
+		} 
+	}
 	
 	return;	
+}
+
+uint8_t Uartstuff_getMove(void) {
+	return valid_input;
 }

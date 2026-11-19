@@ -14,7 +14,7 @@ void Uartstuff_EnableInterrupt(void);
 // overriding default ISR
 void UART0_RX_IRQHandler(void);
 
-
+uint8_t Uartstuff_getMove(void);
 
 #endif
 
