@@ -201,10 +201,7 @@ void Game_Refresh_Snake(void) {
 		if(hasAteApple) {
 			Game_ExtendSnake(old_tail_pos);
 		}
-	} else 
-	{
-		Game_GameOverRoutine();
-	}
+	} 
 	return;
 }
 
@@ -239,10 +236,6 @@ void Game_Step(uint8_t input) {
 	return;
 }
 
-void Game_GameOverRoutine(void) {
-	//TODO
-	return;
-}
 
 
 bool Game_getIsGameOver(void) {

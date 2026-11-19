@@ -44,7 +44,6 @@ typedef struct {
 
 void Game_InitGame(void);
 void Game_InitSnake(void);
-void Game_GameOverRoutine();
 
 void Game_Refresh_Snake(void);
 

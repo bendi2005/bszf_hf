@@ -2,7 +2,7 @@
 #include "em_cmu.h"
 static uint32_t msTicks = 0;
 
-void Timing_Init(void) {
+void Timing_InitTiming(void) {
     if (SysTick_Config(CMU_ClockFreqGet(cmuClock_CORE) / 1000)) {
         while (1);
     }
