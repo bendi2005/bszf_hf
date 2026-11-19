@@ -18,13 +18,14 @@
 /***************************************************************************//**
  * Initialize application.
  ******************************************************************************/
-
+#include "game.h"
+#include "timing.h"
 
 void app_init(void)
 {
-	// Timing init 
+	Timing_InitTiming();
 	// DISP_CLR
-	// Game init 
+	Game_InitGame();
 	// Disp game 
 }
 
@@ -47,4 +48,19 @@ void app_process_action(void)
 	}
 
 	*/
+	if(!Game_getIsGameOver()) 
+	{
+		Timing_Delay(1000);
+		Game_Refresh_Snake();
+		if(Game_getIsGameOver())
+		{
+			return;
+		}
+		// Display game state
+	}
+	else	
+	{
+		// display decimal points flashing (game over state)
+		Timing_Delay(500); // fast flashing
+	}
 }

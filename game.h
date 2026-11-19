@@ -73,7 +73,7 @@ void Game_Step(uint8_t);
 // getters for app.c (since the below are static)
 bool Game_getIsGameOver(void);
 uint8_t Game_getFoodPos(void);
-bool Game_getIsTileActive(uint8_t);
+bool Game_getTileIsActive(uint8_t);
 
 #endif
 
