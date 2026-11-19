@@ -32,16 +32,21 @@ void Uartstuff_InitUsart(void) {
 }
 
 void Uartstuff_EnableInterrupt(void) {
+	// Clears recieve buffer from any input it might have recieved during the init phase of the game
+	// TODO: ezt lehet ketszer kell meghivni idk hogy mukodik mert ugye 2 adat fer az olvaso bufferbe 
+	USART_RxDataGet(UART0);	
+
 	// Raises interrupt if anything enters the buffer
 	USART_IntEnable(UART0,USART_IF_RXDATAV);
+
 	// Allows interrupt to be served by processor
-	// efm32gg_usart.h
+	// enum from: efm32gg_usart.h
 	NVIC_EnableIRQ(UART0_RX_IRQn);
 
 	return; 
 }
 
-// startup_efm32gg.c
+// ISR function name from: startup_efm32gg.c
 void UART0_RX_IRQHandler(void) {
 	// reads valid (not the same as logically valid) input from UART0 and lowers interrupt flag
 	
@@ -62,6 +67,7 @@ void UART0_RX_IRQHandler(void) {
 	return;	
 }
 
+// passes logically valid input to the game 
 uint8_t Uartstuff_getMove(void) {
 	return valid_input;
 }
