@@ -1,5 +1,6 @@
 #include "game.h"
 #include "uart_stuff.h"
+#include <stdlib.h>
 
 // static flags
 static bool hasAteApple;
@@ -64,9 +65,9 @@ static tile board[TILE_COUNT] = {
 
 
 
+// using srand would require stdlib, which is too bloated IMO
 uint8_t Game_GenRandomTileNumber(void) {
-	//temporary rng
-	return 13;
+	return rand() % TILE_COUNT;
 }
 
 void Game_SpawnFood(void) {
@@ -271,5 +272,11 @@ uint8_t Game_getFoodPos(void) {
 
 bool Game_getTileIsActive(uint8_t p_tileid) {
 	return board[p_tileid].tile_isActive;
+}
+
+void Game_ToggleFoodTileActive(void) {
+	// TODO: ez nem csak anny hogy !xy ?
+	board[foodPos].tile_isActive = !board[foodPos].tile_isActive;
+	return;
 }
 

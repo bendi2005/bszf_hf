@@ -9,6 +9,9 @@ void Timing_InitTiming(void);
 // delay is in miliseconds
 void Timing_Delay(uint32_t ms);
 
+// Handles incrementing the delay
+void SysTick_Handler(void);
+
 
 #endif
 

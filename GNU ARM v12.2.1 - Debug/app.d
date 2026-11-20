@@ -71,7 +71,8 @@ app.o: ../app.c \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_cmu_compat.h \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_gpio.h \
  /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_status.h \
- /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/sli_em_cmu.h
+ /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/sli_em_cmu.h \
+ ../display.h
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/toolchain/inc/sl_gcc_preinclude.h:
 ../game.h:
 ../timing.h:
@@ -147,3 +148,4 @@ app.o: ../app.c \
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/em_gpio.h:
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/common/inc/sl_status.h:
 /home/bendi/SimplicityStudio/SDKs/gecko_sdk//platform/emlib/inc/sli_em_cmu.h:
+../display.h:

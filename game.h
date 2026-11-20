@@ -108,5 +108,8 @@ bool Game_getIsGameOver(void);
 uint8_t Game_getFoodPos(void);
 bool Game_getTileIsActive(uint8_t);
 
+// Toggles food tile activity for displaying it
+void Game_ToggleFoodTileActive(void);
+
 #endif
 

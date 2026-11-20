@@ -11,10 +11,10 @@ void Uartstuff_InitUsart(void);
 // Enables UART0 interrupt and clears recieve buffer
 void Uartstuff_EnableInterrupt(void);
 
-// overrides default ISR
+// Overrides default ISR
 void UART0_RX_IRQHandler(void);
 
-// getter for game.c
+// Getter for logically valid input to the game 
 uint8_t Uartstuff_getMove(void);
 
 #endif

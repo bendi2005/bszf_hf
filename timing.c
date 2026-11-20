@@ -1,6 +1,6 @@
 #include "timing.h"
 #include "em_cmu.h"
-static uint32_t msTicks = 0;
+static volatile uint32_t msTicks = 0;
 
 // initialises delayer to ms
 // TODO: szebb lenne makroval
@@ -10,8 +10,14 @@ void Timing_InitTiming(void) {
     }
 }
 
+void SysTick_Handler(void) {
+    msTicks++;
+    return;
+}
+
 // countrs down and ends when the specified time passes
 void Timing_Delay(uint32_t ms) {
     uint32_t start = msTicks;
     while ((msTicks - start) < ms);
+    return;
 }

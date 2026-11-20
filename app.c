@@ -21,6 +21,12 @@
 #include "game.h"
 #include "timing.h"
 #include "uart_stuff.h"
+#include "display.h"
+
+
+
+
+
 
 // Initialises the modules
 // First the timer (the order of this is unimportant, it is a relative delay, more info in timing.h)
@@ -33,9 +39,9 @@ void app_init(void)
 {
 	Timing_InitTiming();
 	Uartstuff_InitUsart();
-	// TODO: DISP_CLR
+	Display_InitDisplay();
 	Game_InitGame();
-	// TODO: Disp game state
+	Display_DisplayGameState();
 	Uartstuff_EnableInterrupt();
 }
 
@@ -61,16 +67,17 @@ void app_process_action(void)
 	if(!Game_getIsGameOver()) 
 	{
 		Timing_Delay(1000);		// set tickspeed (speed of snake) 
+
 		Game_Refresh_Snake();
 		if(Game_getIsGameOver())
 		{
 			return;
 		}
-		// TODO: Display game state
+		Display_DisplayGameState();
 	}
 	else	
 	{
-		// TODO: toggle display decimal points flashing (game over state)
+		Display_ToggleDecimalPoints();
 		Timing_Delay(500); // set flashing speed
 	}
 }

@@ -1,12 +1,17 @@
 #include "uart_stuff.h"
 // based on class #3 and #4's material
+// this "buffer" is not the same as the UART's input buffer
+// this is for latching the input given by the user 
+// TODO: if this is confusing just rename
 static volatile bool input_in_buffer;
+
+// flag for logically valid input
 static volatile uint8_t valid_input;
 
 void Uartstuff_InitUsart(void) {
 	// Enable clocks 
 	CMU_ClockEnable(cmuClock_GPIO, true);
-	CMU_ClockEnable(cmuClock_USART0, true);
+	CMU_ClockEnable(cmuClock_UART0, true);
 
 	// Link uart pins to board controller
 	GPIO_PinModeSet(gpioPortF, 7, gpioModePushPull, 1);
@@ -15,7 +20,7 @@ void Uartstuff_InitUsart(void) {
 	// UART0 config
 	// 115200 Baud, 8N1 frame 
 	USART_InitAsync_TypeDef init = USART_INITASYNC_DEFAULT;
-	USART_InitAsync(USART0, &init);
+	USART_InitAsync(UART0, &init);
 
 	// PE1: input
 	GPIO_PinModeSet(gpioPortE, 1, gpioModeInput, 0);
@@ -46,18 +51,18 @@ void Uartstuff_EnableInterrupt(void) {
 	return; 
 }
 
+
 // ISR function name from: startup_efm32gg.c
 void UART0_RX_IRQHandler(void) {
-	// reads valid (not the same as logically valid) input from UART0 and lowers interrupt flag
-	
-	// using a non-static variable is actually faster, because the comparison after
+	// Reads valid (not the same as logically valid) input from UART0 and lowers interrupt flag
+	// Using a non-static variable is actually faster, because the comparison after
 	// happens using the register inside the cpu (whereas a static var would be in bss (thanks gemini))
 	uint8_t input = USART_RxDataGet(UART0);
-	// we read the input, even if it "goes to waste", as RxDataGet lowers the interrupt flag 
-	// another branch in the if would be slower (i think)
+	// We read the input, even if it "goes to waste", as RxDataGet lowers the interrupt flag 
+	// Another branch in the if would be slower (i think)
 	if(!input_in_buffer) {
 		// check if its a logically valid input
-		if((input != 'j') || (input == 'b'))
+		if(('j' == input) || ('b' == input))
 		{
 			valid_input = input;
 			input_in_buffer = true;
@@ -67,7 +72,17 @@ void UART0_RX_IRQHandler(void) {
 	return;	
 }
 
-// passes logically valid input to the game 
+	// TODO: will this cause problems? (interrupt) (if so we need an interrupenable and disable function)// Passes logically valid input to the game 
 uint8_t Uartstuff_getMove(void) {
-	return valid_input;
+	// If no input is given, it should go straight (and not the last input) 
+	uint8_t ret_valid_input = 0;
+	if(input_in_buffer) 
+	{
+		ret_valid_input = valid_input;
+
+		// Open latch, for new potential move
+		input_in_buffer = false;
+	}
+	
+	return ret_valid_input;
 }
