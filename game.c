@@ -148,7 +148,7 @@ uint8_t Game_getSnakeHeadPos(void) {
 }
 
 uint8_t Game_getSnakeHeadNextPos(void) {
-	// example: snake is on the middle horizontal tile, depending on the direction 
+	// Example: snake is on the middle horizontal tile, depending on the direction 
 	// a turn right could mean NORTH or SOUTH 
 	uint8_t facing = (curDir == WEST || curDir == SOUTH) ? 1 : 0;
     return board[Game_getSnakeHeadPos()].tile_neighbours[facing][nextTurn];
@@ -163,68 +163,66 @@ void Game_FoodCheck(void) {
 
 void Game_ExtendSnake(uint8_t new_body_pos) {
 
-	// puts the new body into the array of body parts
+	// Puts the new body into the array of body parts
 	lajos.ingame_snake_body[Game_getLen() - 1].body_pos = new_body_pos;
-	// sets the tile of the new body part active
+	// Sets the tile of the new body part active
 	board[new_body_pos].tile_isActive = true;
 	lajos.ingame_snake_len++;
-	// if the snake extended, it ate the food before, we spawn a new one
+	// If the snake extended, it ate the food before, we spawn a new one
 	hasAteApple = false;
 	Game_SpawnFood();
 	return;
 }
 
 void Game_Refresh_Snake(void) {
-	Game_isGameOver();
 
-	// this has to happen before moving the snake
+	// This has to happen before moving the snake
 	uint8_t old_tail_pos = (Game_getLen() == 1)
                        ? Game_getSnakeHeadPos() // if the lenght is 1 (at the start) it would underflow
                        : Game_getSnakeBodyPos(Game_getLen() - 2);
-	if(!isGameOver) 
+	// Iterate on body
+	for(int i = Game_getLen() - 2; i >= 0; i--)
 	{
+		Game_MoveSnakeBody(i);
+	}
 
+	// Set old head to inactive
+	board[Game_getSnakeHeadPos()].tile_isActive = false;
 
+	// Set new tiles active
+	for(int i = Game_getLen() - 2; i >= 0; i--) 
+	{
+		board[Game_getSnakeBodyPos(i)].tile_isActive = true;
+	}
 
-		// iterate on body
-		for(int i = Game_getLen() - 2; i >= 0; i--)
-		{
-			Game_MoveSnakeBody(i);
-		}
+	// Finally, move head
 
-		// set old head to inactive
-		board[Game_getSnakeHeadPos()].tile_isActive = false;
+	// Sets nextTurn to the new value
+	Game_Step(Uartstuff_getMove());
 
-		// set new tiles active
-		for(int i = Game_getLen() - 2; i >= 0; i--) 
-		{
-			board[Game_getSnakeBodyPos(i)].tile_isActive = true;
-		}
+	// Moves the head to the next position 
+	lajos.ingame_snake_head.head_pos = Game_getSnakeHeadNextPos(); 
+	board[Game_getSnakeHeadPos()].tile_isActive = true;
+	
 
-		// finally, move head
-		// see if player made a move 
-		Game_Step(Uartstuff_getMove());
+	// TODO szebb lenne switch case
+	// Sets direction depending on what kind of move we made
+	if(nextTurn == RIGHT) 
+	{
+		curDir = (curDir + 3) % DIR_COUNT;
+	} else if (nextTurn == LEFT) 
+	{
+		curDir = (curDir + 1) % DIR_COUNT;
+	}
 
-		lajos.ingame_snake_head.head_pos = Game_getSnakeHeadNextPos(); 
-		board[Game_getSnakeHeadPos()].tile_isActive = true;
-		
+	// If nothing ever happens, we continue straight
+	nextTurn = STRAIGHT;
 
-		// TODO szebb lenne switch case
-		if(nextTurn == RIGHT) 
-		{
-			curDir = (curDir + 3) % DIR_COUNT;
-		} else if (nextTurn == LEFT) 
-		{
-			curDir = (curDir + 1) % DIR_COUNT;
-		}
-		nextTurn = STRAIGHT;
-
-		// if the head moved to the food, the snake ate it
-		Game_FoodCheck();
-		if(hasAteApple) {
-			Game_ExtendSnake(old_tail_pos);
-		}
-	} 
+	// if the head moved to the food, the snake ate it
+	Game_FoodCheck();
+	if(hasAteApple) {
+		Game_ExtendSnake(old_tail_pos);
+	}
 	return;
 }
 

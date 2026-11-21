@@ -1,8 +1,15 @@
-autogen
+.cproject
+.pdm/
+.project
+.projectlinkstore
+.settings/
+app.h
+GNU ARM v12.2.1 - Debug/
+app.c
+autogen/
 compile_commands.json
-config
-gecko_sdk_4.4.6
-GNU ARM v12.2.1 - Debug
+config/
 snakegame.pintool
 snakegame.slcp
 snakegame.slps
+

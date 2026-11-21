@@ -38,8 +38,8 @@ void Uartstuff_InitUsart(void) {
 
 void Uartstuff_EnableInterrupt(void) {
 	// Clears recieve buffer from any input it might have recieved during the init phase of the game
-	// TODO: ezt lehet ketszer kell meghivni idk hogy mukodik mert ugye 2 adat fer az olvaso bufferbe 
-	USART_RxDataGet(UART0);	
+	UART0->CMD = UART_CMD_CLEARRX;
+	NVIC_ClearPendingIRQ(UART0_RX_IRQn);
 
 	// Raises interrupt if anything enters the buffer
 	USART_IntEnable(UART0,USART_IF_RXDATAV);

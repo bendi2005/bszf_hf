@@ -59,6 +59,7 @@ void Game_InitGame(void);
 // Sets starting position, direction, and length
 void Game_InitSnake(void);
 
+// TODO: rewrite comment on the fixed behavior
 // Main gameplay loop: (in order)
 // Checks if gameover happened
 // Moves each body part and the head to the next tile
