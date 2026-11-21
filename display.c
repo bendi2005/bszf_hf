@@ -76,7 +76,7 @@ void Display_UpdateBoard(void) {
 
 // Displays score (lenght of the current snake)
 void Display_UpdateScore(uint8_t cur_len) {
-   // SegmentLCD_Number(cur_len);
+    SegmentLCD_Number(cur_len);
 	return;
 }
 

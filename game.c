@@ -176,14 +176,18 @@ void Game_ExtendSnake(uint8_t new_body_pos) {
 
 void Game_Refresh_Snake(void) {
 
+
+	// Sets nextTurn to the new value
+	Game_Step(Uartstuff_getMove());
+
 	// This has to happen before moving the snake
 	uint8_t old_tail_pos = (Game_getLen() == 1)
-                       ? Game_getSnakeHeadPos() // if the lenght is 1 (at the start) it would underflow
-                       : Game_getSnakeBodyPos(Game_getLen() - 2);
+				   ? Game_getSnakeHeadPos() // if the lenght is 1 (at the start) it would underflow
+				   : Game_getSnakeBodyPos(Game_getLen() - 2);
 	// Iterate on body
 	for(int i = Game_getLen() - 2; i >= 0; i--)
 	{
-		Game_MoveSnakeBody(i);
+	Game_MoveSnakeBody(i);
 	}
 
 	// Set old head to inactive
@@ -192,36 +196,39 @@ void Game_Refresh_Snake(void) {
 	// Set new tiles active
 	for(int i = Game_getLen() - 2; i >= 0; i--) 
 	{
-		board[Game_getSnakeBodyPos(i)].tile_isActive = true;
+	board[Game_getSnakeBodyPos(i)].tile_isActive = true;
 	}
 
 	// Finally, move head
+	// We can check for isGameOver here, as moving the body doesnt depend on the nextTurn
+	Game_isGameOver();
+		if(!isGameOver)
+		{
 
-	// Sets nextTurn to the new value
-	Game_Step(Uartstuff_getMove());
 
-	// Moves the head to the next position 
-	lajos.ingame_snake_head.head_pos = Game_getSnakeHeadNextPos(); 
-	board[Game_getSnakeHeadPos()].tile_isActive = true;
-	
+		// Moves the head to the next position 
+		lajos.ingame_snake_head.head_pos = Game_getSnakeHeadNextPos(); 
+		board[Game_getSnakeHeadPos()].tile_isActive = true;
+		
 
-	// TODO szebb lenne switch case
-	// Sets direction depending on what kind of move we made
-	if(nextTurn == RIGHT) 
-	{
+		// TODO szebb lenne switch case
+		// Sets direction depending on what kind of move we made
+		if(nextTurn == RIGHT) 
+		{
 		curDir = (curDir + 3) % DIR_COUNT;
-	} else if (nextTurn == LEFT) 
-	{
+		} else if (nextTurn == LEFT) 
+		{
 		curDir = (curDir + 1) % DIR_COUNT;
-	}
+		}
 
-	// If nothing ever happens, we continue straight
-	nextTurn = STRAIGHT;
+		// If nothing ever happens, we continue straight
+		nextTurn = STRAIGHT;
 
-	// if the head moved to the food, the snake ate it
-	Game_FoodCheck();
-	if(hasAteApple) {
+		// if the head moved to the food, the snake ate it
+		Game_FoodCheck();
+		if(hasAteApple) {
 		Game_ExtendSnake(old_tail_pos);
+		}
 	}
 	return;
 }
