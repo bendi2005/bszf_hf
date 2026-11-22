@@ -53,7 +53,7 @@ typedef struct {
 // Sets flags for gameover and apple eating to false
 // Initialises snake 
 // Spawns food 
-void Game_InitGame(void);
+void Game_InitGame(uint32_t seed);
 
 // Initialises snake:
 // Sets starting position, direction, and length

@@ -65,7 +65,6 @@ static tile board[TILE_COUNT] = {
 
 
 
-// using srand would require stdlib, which is too bloated IMO
 uint8_t Game_GenRandomTileNumber(void) {
 	return rand() % TILE_COUNT;
 }
@@ -81,19 +80,15 @@ void Game_SpawnFood(void) {
 	return;
 }
 
-void Game_InitGame(void) {
-	// clears all tiles
-	for(int i = 0; i < TILE_COUNT; i++)
-	{
-		board[i].tile_isActive = false;
-	}
-
+void Game_InitGame(uint32_t seed) {
+	
 	isGameOver = false;	
 	hasAteApple = false;
 	
 	Game_InitSnake();
 
 	// order matters here, to avoid spawning food onto the snake
+	srand(seed);
 	Game_SpawnFood();
 }
 
