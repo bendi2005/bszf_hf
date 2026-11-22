@@ -1,6 +1,5 @@
 #include "game.h"
 #include "uart_stuff.h"
-#include <stdlib.h>
 
 // static flags
 static bool hasAteApple;
@@ -63,10 +62,21 @@ static tile board[TILE_COUNT] = {
     { .tile_id = 36, .tile_isActive = false, .tile_neighbours = { { 28,  7, 13 }, { 28, 20, 14 } } }, // 7C
 };
 
+// instead of importing stdlib bloat we use Marsaglia's xorshift Algorithm 
+static uint32_t rng_state = 1; // cannot be 0
 
+// Algorithm "xor" from p. 4 of Marsaglia, "Xorshift RNGs"
+static uint32_t my_rand(void) 
+{
+	uint32_t x = rng_state;
+	x ^= x << 13;
+	x ^= x >> 17;
+	x ^= x << 5;
+	return rng_state = x;
+}
 
 uint8_t Game_GenRandomTileNumber(void) {
-	return rand() % TILE_COUNT;
+	return my_rand() % TILE_COUNT;
 }
 
 void Game_SpawnFood(void) {
@@ -88,7 +98,7 @@ void Game_InitGame(uint32_t seed) {
 	Game_InitSnake();
 
 	// order matters here, to avoid spawning food onto the snake
-	srand(seed);
+	rng_state = (0 == seed) ? 1 : seed; // again, cannot be 0
 	Game_SpawnFood();
 }
 
