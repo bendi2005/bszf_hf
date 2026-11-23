@@ -104,7 +104,19 @@ void Game_InitGame(uint32_t seed) {
 
 // head would go to an active tile == bodypart is already there
 void Game_isGameOver(void) {
-	isGameOver = board[Game_getSnakeHeadNextPos()].tile_isActive;
+	uint8_t headPos = Game_getSnakeHeadPos();
+	uint8_t facing = (curDir == WEST || curDir == SOUTH) ? 1 : 0;
+
+	bool directHit = board[Game_getSnakeHeadNextPos()].tile_isActive;
+
+	uint8_t rightPos = board[headPos].tile_neighbours[facing][RIGHT];
+	uint8_t leftPos  = board[headPos].tile_neighbours[facing][LEFT];
+
+	bool crossHit = (nextTurn == STRAIGHT)
+			&& board[rightPos].tile_isActive
+			&& board[leftPos].tile_isActive;
+
+	isGameOver = directHit || crossHit;
 	return;
 }
 
