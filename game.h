@@ -1,8 +1,4 @@
-//Az a megvalositasi otlet, hogy: a szegmensek tudjak hogy mi az idjuk (mittudomen 0-32) es tudja, hogy mik az utana kovetkezo 4egtaj szerinti mezok. minden ticken meghiv a jatek egy frissito fuggvenyt, megnezi, hogy volt-e input az uarton (es akkor az lesz az uj iranya a kigyo fejenek), aztan meghiv egy fuggvenyt ami vegigmegy a kigyo strukturajan, ahol minden kigyoreszt (tudja melyik szegmensen van, es milyen 4egtaj iranyba megy), megnezi, hogy a kigyo eleje elotti szegmens ures-e (ha nem akkor a kovetkezo ciklust nem csinalja meg es gameover) aztan a legelso szegmenst lepteti a kovetkezore, a tobbit pedig a listaban az elotte levo "regi" helyere (ezt ugy, hogy hatulrol megyunk es a legelso elemet kulon utana kezeljuk, mert csak o tudja milyen iranyba kell menni),  ehhhez pl a display.h-ba be kell includeolnom a segmentlcd.h-t nem? hogy sajat mezo adatstrukturat csinaljak belole
-
-
-// TODO getters for app.c
-// TODO static 
+// Main logic is Game_Refresh_Snake()
 #ifndef GAME_H
 #define GAME_H
 #include "stdint.h"
@@ -59,27 +55,24 @@ void Game_InitGame(uint32_t seed);
 // Sets starting position, direction, and length
 void Game_InitSnake(void);
 
-// TODO: rewrite comment on the fixed behavior
 // Main gameplay loop: (in order)
-// Checks if gameover happened
-// Moves each body part and the head to the next tile
-// Moves body parts, by iterating backwards
-// and placing the body part to the previous location of the one in front of it
-
-// Moves head
-// Checks if food was eaten: if yes; extends the snake and spawns new food
+// Checks for the next move (RIGHT, LEFT, STRAIGHT)
+// Steps the body parts to their next position (Head is not a body part), body parts follow each other
+// Moves the head
+// Checks for GameOver
+// If snake ate the food, it extends the snake
 void Game_Refresh_Snake(void);
 
-// Checks if the head would collide with a body part: if yes; game is over
+// Checks if the head would collide with a body part (wether its direct contact or cross hit)
 void Game_isGameOver(void);
 
-// returns length of the snake (including head)
+// Returns length of the snake (including head)
 uint8_t Game_getLen(void);
 
-// generates random number to place the food on TODO real random (srand)
+// Generates random tile_id to attempt to place the food on 
 uint8_t Game_GenRandomTileNumber(void);
 
-// spawns food on an eligible tile
+// Spawns food on an eligible tile
 void Game_SpawnFood(void);
 
 // checks if a food is on the same tile as head 
@@ -93,15 +86,17 @@ void Game_ExtendSnake(uint8_t);
 void Game_MoveSnakeBody(uint8_t);
 
 // "Getters" Used only in game.c, for clearer code 
-uint8_t Game_getSnakeBodyPos(uint8_t);
-uint8_t Game_getSnakeHeadPos(void);
-uint8_t Game_getSnakeHeadNextPos(void);
+//	uint8_t Game_getSnakeBodyPos(uint8_t);
+//	uint8_t Game_getSnakeHeadPos(void);
+//	uint8_t Game_getSnakeHeadNextPos(void);
 
+// Returns the index in board, by tile id 
+// In hindsight this is unneeded but its late 
 uint8_t Game_SearchTileByPos(uint8_t);
 
 // Updates snakes direction (turns it) based on input
 // 'j' => right		'b' => left
-//checking the validity of the input is handled by uart_stuff
+//checking all validity of the input is handled by uart_stuff
 void Game_Step(uint8_t);
 
 // getters for app.c (since the variables are static)

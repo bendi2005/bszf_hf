@@ -62,6 +62,25 @@ static tile board[TILE_COUNT] = {
     { .tile_id = 36, .tile_isActive = false, .tile_neighbours = { { 28,  7, 13 }, { 28, 20, 14 } } }, // 7C
 };
 
+
+// Getters for cleaner code 
+
+static uint8_t Game_getSnakeBodyPos(uint8_t bodyid) {
+	return lajos.ingame_snake_body[bodyid].body_pos;
+}
+
+static uint8_t Game_getSnakeHeadPos(void) {
+	return lajos.ingame_snake_head.head_pos;
+}
+
+static uint8_t Game_getSnakeHeadNextPos(void) {
+	// Example: snake is on the middle horizontal tile, depending on the direction 
+	// a turn right could mean NORTH or SOUTH 
+	uint8_t facing = (curDir == WEST || curDir == SOUTH) ? 1 : 0;
+    return board[Game_getSnakeHeadPos()].tile_neighbours[facing][nextTurn];
+}
+
+
 // instead of importing stdlib bloat we use Marsaglia's xorshift Algorithm 
 static uint32_t rng_state = 1; // cannot be 0
 
@@ -156,20 +175,6 @@ uint8_t Game_getLen(void) {
 	return lajos.ingame_snake_len;
 }
 
-uint8_t Game_getSnakeBodyPos(uint8_t bodyid) {
-	return lajos.ingame_snake_body[bodyid].body_pos;
-}
-
-uint8_t Game_getSnakeHeadPos(void) {
-	return lajos.ingame_snake_head.head_pos;
-}
-
-uint8_t Game_getSnakeHeadNextPos(void) {
-	// Example: snake is on the middle horizontal tile, depending on the direction 
-	// a turn right could mean NORTH or SOUTH 
-	uint8_t facing = (curDir == WEST || curDir == SOUTH) ? 1 : 0;
-    return board[Game_getSnakeHeadPos()].tile_neighbours[facing][nextTurn];
-}
 
 void Game_FoodCheck(void) {
 	if(Game_getSnakeHeadPos() == foodPos) {
@@ -214,6 +219,12 @@ void Game_Refresh_Snake(void) {
 	for(int i = Game_getLen() - 2; i >= 0; i--) 
 	{
 	board[Game_getSnakeBodyPos(i)].tile_isActive = true;
+	}
+
+	// If the head is about to eat the food, the "old tail" will be a body part, thus active
+	// We need to include this for the gameover check
+	if (Game_getSnakeHeadNextPos() == foodPos) {
+		board[old_tail_pos].tile_isActive = true;
 	}
 
 	// Finally, move head
@@ -301,4 +312,5 @@ void Game_ToggleFoodTileActive(void) {
 	board[foodPos].tile_isActive = !board[foodPos].tile_isActive;
 	return;
 }
+
 

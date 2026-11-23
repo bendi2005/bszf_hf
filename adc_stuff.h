@@ -6,9 +6,13 @@
 
 #define SEED_LEN 32
 
+// Initialises ADC0 
+// Default settings
+// Single sample mode
 void Adcstuff_InitAdc(void); 
 
 
+// Getter that gets called in app.c
 uint32_t Adcstuff_getSeed(void);
 
 #endif

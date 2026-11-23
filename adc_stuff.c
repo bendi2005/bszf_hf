@@ -1,6 +1,7 @@
 #include "adc_stuff.h"
 
 void Adcstuff_InitAdc(void) {
+	// Give clock to ADC0
 	CMU_ClockEnable(cmuClock_ADC0, true);
 	// The warmup time is not enough, but timebase is scuffed (cannot set it above 31)
 	// We arent measuring for accuracy but for noise so its fine (i think)
@@ -13,6 +14,9 @@ void Adcstuff_InitAdc(void) {
 	return;	
 }
 
+// Take a sample from the temperature sensor's voltage for random seed
+// Use the LSB as noise
+// We take 32 samples, each LSB gets shifted to form a 32 bit unsigned
 static uint32_t Adcstuff_TakeSample(void) {
 	uint32_t r_seed = 0;
 	uint32_t temp = 0;
@@ -21,8 +25,10 @@ static uint32_t Adcstuff_TakeSample(void) {
 		// Scan the signal
 		ADC_Start(ADC0, adcStartSingle);
 		// Wait for ADC to finish taking sample
+		// If the valid data flag of the ADC is nonzero it finished sampling
 		while(0 == ((ADC0->STATUS) & (ADC_STATUS_SINGLEDV)) );
 		// Get the data from ADC0's data register
+		// Clears valid data flag
 		temp = ADC_DataSingleGet(ADC0);
 		// Mask temp to get the LSB
 		temp = temp & lsb_mask;

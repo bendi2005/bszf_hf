@@ -5,7 +5,6 @@
 .settings/
 app.h
 GNU ARM v12.2.1 - Debug/
-app.c
 autogen/
 compile_commands.json
 config/
