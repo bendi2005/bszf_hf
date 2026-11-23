@@ -24,8 +24,6 @@ void Display_ClearLCD(void) {
 
 void Display_InitDisplay(void) {
 	SegmentLCD_Init(false);
-	// just to be sure the display is empty
-	//Display_ClearLCD();
 }
 
 
