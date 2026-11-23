@@ -1,18 +1,14 @@
 #ifndef TIMING_H
 #define TIMING_H
-#include "stdint.h"
 
-// timing init
+#include <stdint.h>
+#include <stdbool.h>
+
 void Timing_InitTiming(void);
+void Timing_StartPeriodicMs(uint32_t period_ms);
+bool Timing_ConsumeTick(void);
+void Timing_SleepEM1(void);
 
-// function that app.c uses
-// delay is in miliseconds
 void Timing_Delay(uint32_t ms);
 
-// Handles incrementing the delay
-void SysTick_Handler(void);
-
-
-#endif
-
-
+#endif 
