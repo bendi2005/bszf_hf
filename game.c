@@ -132,9 +132,19 @@ void Game_isGameOver(void) {
 	uint8_t leftPos  = board[headPos].tile_neighbours[facing][LEFT];
 
 	bool crossHit = (nextTurn == STRAIGHT)
-			&& board[rightPos].tile_isActive
-			&& board[leftPos].tile_isActive;
+			&& (board[rightPos].tile_isActive
+			|| board[leftPos].tile_isActive); // needs to be || because if its && you could have it so that that you pass throgh the new tail
 
+	// Wrapping around the WEST and EAST side of the board horizontally is problematic
+	// Theres a "double wall", I honestly cannot figure out if that should count as a collision or not; if it should, this segment handles it
+
+	//if(!crossHit && nextTurn == STRAIGHT) {
+	//	if(curDir == EAST && (headPos == 6 || headPos == 13 || headPos == 20)) {
+	//		crossHit = board[21].tile_isActive && board[29].tile_isActive; // 1F + 1E
+	//	} else if (curDir == WEST && (headPos == 0 || headPos == 7 || headPos == 14)) {
+	//		crossHit = board[28].tile_isActive && board[36].tile_isActive; // 7B + 7C
+	//	}
+	//}
 	isGameOver = directHit || crossHit;
 	return;
 }
